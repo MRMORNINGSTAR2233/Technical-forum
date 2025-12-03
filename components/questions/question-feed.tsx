@@ -36,7 +36,7 @@ export async function QuestionFeed({
 
   return (
     <div className="bg-white border border-gray-300 rounded-md shadow-sm">
-      {questions.map((question, index) => (
+      {questions.map((question) => (
         <div key={question.id}>
           <QuestionCard
             id={question.id}

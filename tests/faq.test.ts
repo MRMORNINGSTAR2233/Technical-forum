@@ -2,15 +2,11 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { prisma } from '@/lib/prisma';
 import { getRecentFAQs, getFAQCount } from '@/app/actions/faq';
 import * as fc from 'fast-check';
+import { cleanupDatabase, createTestProfile, createTestQuestion, createTestAnswer } from './helpers/test-utils';
 
 describe('AI FAQ System', () => {
   beforeEach(async () => {
-    // Clean up test data
-    await prisma.aI_FAQ.deleteMany({});
-    await prisma.vote.deleteMany({});
-    await prisma.answer.deleteMany({});
-    await prisma.question.deleteMany({});
-    await prisma.profile.deleteMany({});
+    await cleanupDatabase();
   });
 
   describe('Property 24: AI summarization for eligible questions', () => {

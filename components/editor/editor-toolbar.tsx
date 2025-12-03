@@ -19,18 +19,15 @@ interface EditorToolbarProps {
   editor: Editor;
 }
 
-export function EditorToolbar({ editor }: EditorToolbarProps) {
-  const ToolbarButton = ({
-    onClick,
-    active,
-    children,
-    title,
-  }: {
-    onClick: () => void;
-    active?: boolean;
-    children: React.ReactNode;
-    title: string;
-  }) => (
+interface ToolbarButtonProps {
+  onClick: () => void;
+  active?: boolean;
+  children: React.ReactNode;
+  title: string;
+}
+
+function ToolbarButton({ onClick, active, children, title }: ToolbarButtonProps) {
+  return (
     <button
       type="button"
       onClick={onClick}
@@ -42,7 +39,9 @@ export function EditorToolbar({ editor }: EditorToolbarProps) {
       {children}
     </button>
   );
+}
 
+export function EditorToolbar({ editor }: EditorToolbarProps) {
   return (
     <div className="border-b bg-gray-50 p-2 flex flex-wrap gap-1">
       <ToolbarButton

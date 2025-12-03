@@ -41,43 +41,60 @@ export function SignUpForm() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
+        <Label htmlFor="email" className="text-sm font-semibold text-[#0c0d0e]">
+          Email
+        </Label>
         <Input
           id="email"
           type="email"
           placeholder="yourname@sode-edu.in"
           {...register('email')}
           disabled={isLoading}
+          className="border-gray-300 focus:border-[#0a95ff] focus:ring-[#0a95ff]"
         />
         <p className="text-xs text-[#6a737c]">
           Must be a valid @sode-edu.in email address
         </p>
         {errors.email && (
-          <p className="text-sm text-red-600">{errors.email.message}</p>
+          <p className="text-sm text-[#d1383d] flex items-center gap-1">
+            <span>✗</span> {errors.email.message}
+          </p>
         )}
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="password">Password</Label>
+        <Label htmlFor="password" className="text-sm font-semibold text-[#0c0d0e]">
+          Password
+        </Label>
         <Input
           id="password"
           type="password"
           placeholder="••••••••"
           {...register('password')}
           disabled={isLoading}
+          className="border-gray-300 focus:border-[#0a95ff] focus:ring-[#0a95ff]"
         />
+        <p className="text-xs text-[#6a737c]">
+          Minimum 6 characters
+        </p>
         {errors.password && (
-          <p className="text-sm text-red-600">{errors.password.message}</p>
+          <p className="text-sm text-[#d1383d] flex items-center gap-1">
+            <span>✗</span> {errors.password.message}
+          </p>
         )}
       </div>
 
       {error && (
-        <div className="rounded-md bg-red-50 p-3">
-          <p className="text-sm text-red-800">{error}</p>
+        <div className="rounded-md bg-[#fdf2f2] border border-[#f1aeb5] p-3">
+          <p className="text-sm text-[#842029]">{error}</p>
         </div>
       )}
 
-      <Button type="submit" className="w-full" disabled={isLoading}>
+      <Button 
+        type="submit" 
+        className="w-full bg-[#0a95ff] hover:bg-[#0074cc] text-white font-medium py-2.5" 
+        disabled={isLoading}
+      >
         {isLoading ? 'Creating account...' : 'Sign up'}
       </Button>
     </form>

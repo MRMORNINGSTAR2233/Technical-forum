@@ -1,23 +1,14 @@
 import Link from 'next/link';
 import {
   Home,
-  Globe,
   MessageSquare,
   Tag,
   Users,
   HelpCircle,
   Settings,
-  Star,
 } from 'lucide-react';
 import { getCurrentUser } from '@/app/actions/auth';
 import { getUnansweredCount } from '@/app/actions/unanswered';
-
-const navItems = [
-  { href: '/', label: 'Home', icon: Home },
-  { href: '/questions', label: 'Questions', icon: Globe },
-  { href: '/tags', label: 'Tags', icon: Tag },
-  { href: '/users', label: 'Users', icon: Users },
-];
 
 const publicItems = [
   { href: '/questions', label: 'Questions', icon: MessageSquare },

@@ -8,6 +8,7 @@ import { signIn } from '@/app/actions/auth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import Link from 'next/link';
 
 export function SignInForm() {
   const [error, setError] = useState<string | null>(null);
@@ -28,50 +29,68 @@ export function SignInForm() {
     try {
       await signIn(data.email, data.password);
       // signIn will redirect on success
-    } catch (err) {
+    } catch (_err) {
       setError('Invalid email or password');
       setIsLoading(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
+      <div className="space-y-1">
+        <Label htmlFor="email" className="text-sm font-semibold text-[#0c0d0e]">
+          Email
+        </Label>
         <Input
           id="email"
           type="email"
-          placeholder="you@example.com"
+          placeholder=""
           {...register('email')}
           disabled={isLoading}
+          className="border-gray-300 focus:border-[#6cbbf7] focus:ring-1 focus:ring-[#6cbbf7] text-sm py-2"
         />
         {errors.email && (
-          <p className="text-sm text-red-600">{errors.email.message}</p>
+          <p className="text-xs text-[#d1383d]">{errors.email.message}</p>
         )}
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="password">Password</Label>
+      <div className="space-y-1">
+        <div className="flex items-center justify-between">
+          <Label htmlFor="password" className="text-sm font-semibold text-[#0c0d0e]">
+            Password
+          </Label>
+          <Link
+            href="/forgot-password"
+            className="text-xs text-[#0074cc] hover:text-[#0a95ff]"
+          >
+            Forgot password?
+          </Link>
+        </div>
         <Input
           id="password"
           type="password"
           placeholder="••••••••"
           {...register('password')}
           disabled={isLoading}
+          className="border-gray-300 focus:border-[#6cbbf7] focus:ring-1 focus:ring-[#6cbbf7] text-sm py-2"
         />
         {errors.password && (
-          <p className="text-sm text-red-600">{errors.password.message}</p>
+          <p className="text-xs text-[#d1383d]">{errors.password.message}</p>
         )}
       </div>
 
       {error && (
-        <div className="rounded-md bg-red-50 p-3">
-          <p className="text-sm text-red-800">{error}</p>
+        <div className="rounded-md bg-[#fdf2f2] border border-[#f1aeb5] p-2">
+          <p className="text-xs text-[#842029]">{error}</p>
         </div>
       )}
 
-      <Button type="submit" className="w-full" disabled={isLoading}>
-        {isLoading ? 'Signing in...' : 'Sign in'}
+      <Button 
+        type="submit" 
+        className="w-full bg-[#0a95ff] hover:bg-[#0074cc] text-white font-normal py-2.5 text-sm" 
+        disabled={isLoading}
+      >
+        {isLoading ? 'Signing in...' : 'Log in'}
       </Button>
     </form>
   );

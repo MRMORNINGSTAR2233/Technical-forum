@@ -93,7 +93,7 @@ export async function voteOnQuestion(
 
     try {
       revalidatePath(`/questions/${questionId}`);
-    } catch (e) {
+    } catch (_e) {
       // Ignore revalidation errors in test environment
     }
 
@@ -193,7 +193,7 @@ export async function voteOnAnswer(
 
     try {
       revalidatePath(`/questions/${answer.questionId}`);
-    } catch (e) {
+    } catch (_e) {
       // Ignore revalidation errors in test environment
     }
 

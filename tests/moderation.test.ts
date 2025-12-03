@@ -2,14 +2,11 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { prisma } from '@/lib/prisma';
 import { getPendingPosts, approvePost, rejectPost, getPendingPostCount } from '@/app/actions/moderation';
 import * as fc from 'fast-check';
+import { cleanupDatabase, createTestProfile, createTestQuestion, createTestAnswer } from './helpers/test-utils';
 
 describe('Moderation System', () => {
   beforeEach(async () => {
-    // Clean up test data
-    await prisma.vote.deleteMany({});
-    await prisma.answer.deleteMany({});
-    await prisma.question.deleteMany({});
-    await prisma.profile.deleteMany({});
+    await cleanupDatabase();
   });
 
   describe('Property 16: Pending posts in moderation queue', () => {

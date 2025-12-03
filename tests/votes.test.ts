@@ -1,14 +1,11 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { prisma } from '@/lib/prisma';
 import { voteOnQuestion, voteOnAnswer } from '@/app/actions/votes';
+import { cleanupDatabase, createTestProfile, createTestQuestion, createTestAnswer } from './helpers/test-utils';
 
 describe('Voting System', () => {
   beforeEach(async () => {
-    // Clean up test data
-    await prisma.vote.deleteMany({});
-    await prisma.answer.deleteMany({});
-    await prisma.question.deleteMany({});
-    await prisma.profile.deleteMany({});
+    await cleanupDatabase();
   });
 
   describe('Property 11: Upvote creates positive vote', () => {

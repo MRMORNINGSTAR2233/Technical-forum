@@ -82,13 +82,13 @@ export function VotingControls({
           // Revert optimistic update
           setScore(previousScore);
           setUserVote(previousVote);
-          setError(result.error);
+          setError(result.error ?? 'An error occurred');
         } else {
           // Update with actual score from server
           setScore(result.newScore);
           router.refresh();
         }
-      } catch (err) {
+      } catch (_err) {
         // Revert optimistic update
         setScore(previousScore);
         setUserVote(previousVote);

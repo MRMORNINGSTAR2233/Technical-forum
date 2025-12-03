@@ -11,14 +11,12 @@ const lowlight = createLowlight(common);
 interface RichTextEditorProps {
   content?: string;
   onChange?: (html: string) => void;
-  placeholder?: string;
   editable?: boolean;
 }
 
 export function RichTextEditor({
   content = '',
   onChange,
-  placeholder = 'Write your content here...',
   editable = true,
 }: RichTextEditorProps) {
   const editor = useEditor({

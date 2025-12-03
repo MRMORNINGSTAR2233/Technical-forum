@@ -2,54 +2,36 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { prisma } from '@/lib/prisma';
 import { getUnansweredQuestions, getUnansweredCount, isQuestionUnanswered } from '@/app/actions/unanswered';
 import * as fc from 'fast-check';
+import { cleanupDatabase, createTestProfile, createTestQuestion, createTestAnswer } from './helpers/test-utils';
 
 describe('Unanswered Questions Feature', () => {
   beforeEach(async () => {
-    // Clean up test data
-    await prisma.vote.deleteMany({});
-    await prisma.answer.deleteMany({});
-    await prisma.question.deleteMany({});
-    await prisma.profile.deleteMany({});
+    await cleanupDatabase();
   });
 
   describe('Property 45: Unanswered filter accuracy', () => {
     it('should return only questions with zero answers', async () => {
       // Create an author profile
-      const author = await prisma.profile.create({
-        data: {
-          userId: 'test-author-unanswered',
-          pseudonym: 'TestAuthorUnanswered',
-          reputation: 0,
-        },
-      });
+      const author = await createTestProfile();
 
       // Create unanswered question
-      const unansweredQuestion = await prisma.question.create({
-        data: {
-          title: 'Unanswered Question',
-          content: 'No answers yet',
-          status: 'APPROVED',
-          authorId: author.id,
-        },
+      const unansweredQuestion = await createTestQuestion({
+        title: 'Unanswered Question',
+        content: 'No answers yet',
+        authorId: author.id,
       });
 
       // Create answered question
-      const answeredQuestion = await prisma.question.create({
-        data: {
-          title: 'Answered Question',
-          content: 'Has answers',
-          status: 'APPROVED',
-          authorId: author.id,
-        },
+      const answeredQuestion = await createTestQuestion({
+        title: 'Answered Question',
+        content: 'Has answers',
+        authorId: author.id,
       });
 
-      await prisma.answer.create({
-        data: {
-          content: 'An answer',
-          status: 'APPROVED',
-          questionId: answeredQuestion.id,
-          authorId: author.id,
-        },
+      await createTestAnswer({
+        content: 'An answer',
+        questionId: answeredQuestion.id,
+        authorId: author.id,
       });
 
       // Fetch unanswered questions

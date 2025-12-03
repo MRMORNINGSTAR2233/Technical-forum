@@ -67,56 +67,93 @@ export function PseudonymSelector({ userId }: PseudonymSelectorProps) {
     }
   };
 
+  const handleSkip = async () => {
+    setIsLoading(true);
+    setError(null);
+
+    // Set pseudonym as "Unknown" when skipping
+    const result = await createProfile(userId, 'Unknown');
+
+    if ('error' in result && result.error) {
+      setError(result.error);
+      setIsLoading(false);
+    } else {
+      // Redirect to home
+      router.push('/');
+      router.refresh();
+    }
+  };
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="pseudonym">Choose your pseudonym</Label>
+        <Label htmlFor="pseudonym" className="text-sm font-semibold text-[#0c0d0e]">
+          Pseudonym (Optional)
+        </Label>
         <div className="flex gap-2">
           <Input
             id="pseudonym"
             type="text"
-            placeholder="RedBird"
+            placeholder="e.g., RedBird, CodeNinja, TechWizard"
             {...register('pseudonym')}
             disabled={isLoading}
             onBlur={checkAvailability}
+            className="flex-1 border-gray-300 focus:border-[#0a95ff] focus:ring-[#0a95ff]"
           />
           <Button
             type="button"
             variant="outline"
             onClick={checkAvailability}
             disabled={isChecking || !pseudonym}
+            className="border-gray-300 hover:bg-gray-50"
           >
             {isChecking ? 'Checking...' : 'Check'}
           </Button>
         </div>
         {errors.pseudonym && (
-          <p className="text-sm text-red-600">{errors.pseudonym.message}</p>
+          <p className="text-sm text-[#d1383d] flex items-center gap-1">
+            <span>✗</span> {errors.pseudonym.message}
+          </p>
         )}
         {isAvailable === true && (
-          <p className="text-sm text-green-600">✓ Pseudonym is available</p>
+          <p className="text-sm text-[#2f6f44] flex items-center gap-1">
+            <span>✓</span> This pseudonym is available!
+          </p>
         )}
         {isAvailable === false && (
-          <p className="text-sm text-red-600">✗ Pseudonym is already taken</p>
+          <p className="text-sm text-[#d1383d] flex items-center gap-1">
+            <span>✗</span> This pseudonym is already taken
+          </p>
         )}
-        <p className="text-xs text-gray-500">
-          Your pseudonym will be your public identity on the forum. Choose
-          wisely!
+        <p className="text-xs text-[#6a737c]">
+          3-20 characters. Letters, numbers, and underscores only. You can set this later from your profile.
         </p>
       </div>
 
       {error && (
-        <div className="rounded-md bg-red-50 p-3">
-          <p className="text-sm text-red-800">{error}</p>
+        <div className="rounded-md bg-[#fdf2f2] border border-[#f1aeb5] p-3">
+          <p className="text-sm text-[#842029]">{error}</p>
         </div>
       )}
 
-      <Button
-        type="submit"
-        className="w-full"
-        disabled={isLoading || isAvailable === false}
-      >
-        {isLoading ? 'Creating profile...' : 'Continue'}
-      </Button>
+      <div className="flex gap-2">
+        <Button
+          type="button"
+          variant="outline"
+          onClick={handleSkip}
+          className="flex-1 border-gray-300 hover:bg-gray-50"
+          disabled={isLoading}
+        >
+          Skip for now
+        </Button>
+        <Button
+          type="submit"
+          className="flex-1 bg-[#0a95ff] hover:bg-[#0074cc] text-white font-medium py-2.5"
+          disabled={isLoading || isAvailable === false}
+        >
+          {isLoading ? 'Creating...' : 'Continue'}
+        </Button>
+      </div>
     </form>
   );
 }

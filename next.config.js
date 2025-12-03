@@ -1,4 +1,6 @@
 /** @type {import('next').NextConfig} */
+const path = require('path');
+
 const nextConfig = {
   experimental: {
     serverActions: {
@@ -8,6 +10,7 @@ const nextConfig = {
   images: {
     domains: ['localhost'],
   },
+  outputFileTracingRoot: path.join(__dirname, './'),
 };
 
 module.exports = nextConfig;

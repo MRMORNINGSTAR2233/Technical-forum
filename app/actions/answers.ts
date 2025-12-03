@@ -5,6 +5,7 @@ import { getCurrentUser } from './auth';
 import { getAutoApproveStatus } from './settings';
 import { revalidatePath } from 'next/cache';
 import { PostStatus } from '@prisma/client';
+import { validateAnswerContent } from '@/lib/content-moderation';
 
 export async function createAnswer(questionId: string, content: string) {
   const user = await getCurrentUser();
@@ -22,8 +23,13 @@ export async function createAnswer(questionId: string, content: string) {
     return { error: 'Content is required' };
   }
 
-  if (content.length > 30000) {
-    return { error: 'Content must be 30,000 characters or less' };
+  // Content moderation check
+  const validation = validateAnswerContent(content);
+  if (!validation.isValid) {
+    return {
+      error: validation.reason || 'Content validation failed',
+      suggestions: validation.suggestions,
+    };
   }
 
   // Verify question exists
@@ -61,7 +67,7 @@ export async function createAnswer(questionId: string, content: string) {
 
     try {
       revalidatePath(`/questions/${questionId}`);
-    } catch (e) {
+    } catch (_e) {
       // Ignore revalidation errors in test environment
     }
 
@@ -140,7 +146,7 @@ export async function acceptAnswer(answerId: string, questionId: string) {
 
     try {
       revalidatePath(`/questions/${questionId}`);
-    } catch (e) {
+    } catch (_e) {
       // Ignore revalidation errors in test environment
     }
 

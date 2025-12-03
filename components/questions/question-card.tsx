@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Eye, MessageSquare, CheckCircle2 } from 'lucide-react';
+import { CheckCircle2 } from 'lucide-react';
 
 interface QuestionCardProps {
   id: string;

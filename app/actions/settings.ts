@@ -30,7 +30,7 @@ export async function setAutoApproveStatus(enabled: boolean) {
     try {
       revalidatePath('/settings');
       revalidatePath('/');
-    } catch (e) {
+    } catch (_e) {
       // Ignore revalidation errors in test environment
     }
 

@@ -4,21 +4,23 @@ import { Search } from 'lucide-react';
 import { Suspense } from 'react';
 
 interface SearchPageProps {
-  searchParams: {
+  searchParams: Promise<{
     q?: string;
-  };
+  }>;
 }
 
 export async function generateMetadata({ searchParams }: SearchPageProps) {
-  const query = searchParams.q || '';
+  const { q } = await searchParams;
+  const query = q || '';
   return {
     title: query ? `Search: ${query} | SMVITM Tech Forum` : 'Search | SMVITM Tech Forum',
     description: 'Search for questions and answers',
   };
 }
 
-export default function SearchPage({ searchParams }: SearchPageProps) {
-  const query = searchParams.q || '';
+export default async function SearchPage({ searchParams }: SearchPageProps) {
+  const { q } = await searchParams;
+  const query = q || '';
 
   return (
     <div className="max-w-4xl mx-auto py-8 px-4">

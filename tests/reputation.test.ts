@@ -1,11 +1,11 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { prisma } from '@/lib/prisma';
 import { updateReputation, REPUTATION_CHANGES } from '@/lib/reputation';
+import { cleanupDatabase, createTestProfile } from './helpers/test-utils';
 
 describe('Reputation System', () => {
   beforeEach(async () => {
-    // Clean up test data
-    await prisma.profile.deleteMany({});
+    await cleanupDatabase();
   });
 
   describe('Property 15: Reputation updates on voting', () => {

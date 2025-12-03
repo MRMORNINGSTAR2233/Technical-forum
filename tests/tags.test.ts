@@ -2,15 +2,11 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { prisma } from '@/lib/prisma';
 import { getAllTags, getQuestionsByTag, getTagByName, getPopularTags } from '@/app/actions/tags';
 import * as fc from 'fast-check';
+import { cleanupDatabase, createTestProfile, createTestQuestion } from './helpers/test-utils';
 
 describe('Tag System', () => {
   beforeEach(async () => {
-    // Clean up test data
-    await prisma.vote.deleteMany({});
-    await prisma.answer.deleteMany({});
-    await prisma.question.deleteMany({});
-    await prisma.tag.deleteMany({});
-    await prisma.profile.deleteMany({});
+    await cleanupDatabase();
   });
 
   describe('Property 36: Tag page display', () => {

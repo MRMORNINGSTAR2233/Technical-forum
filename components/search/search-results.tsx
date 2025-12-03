@@ -21,7 +21,7 @@ export async function SearchResults({ query }: SearchResultsProps) {
     return (
       <div className="p-12 text-center bg-gray-50 border border-gray-200 rounded-lg">
         <h3 className="text-lg font-semibold text-gray-700 mb-2">
-          No results found for "{query}"
+          No results found for &quot;{query}&quot;
         </h3>
         <p className="text-sm text-gray-600 mb-4">
           Try different keywords or ask a new question
@@ -39,7 +39,7 @@ export async function SearchResults({ query }: SearchResultsProps) {
   return (
     <div className="space-y-4">
       <p className="text-sm text-gray-600">
-        Found {results.length} result{results.length !== 1 ? 's' : ''} for "{query}"
+        Found {results.length} result{results.length !== 1 ? 's' : ''} for &quot;{query}&quot;
       </p>
       {results.map((result) => (
         <QuestionCard

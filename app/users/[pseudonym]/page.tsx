@@ -1,24 +1,31 @@
 import { getUserByPseudonym } from '@/app/actions/users';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { Award, MessageSquare, CheckCircle, Calendar, Clock, TrendingUp } from 'lucide-react';
+import { Award, CheckCircle, Calendar, Clock, TrendingUp } from 'lucide-react';
 
 interface UserProfilePageProps {
-  params: {
+  params: Promise<{
     pseudonym: string;
-  };
+  }>;
 }
 
 export async function generateMetadata({ params }: UserProfilePageProps) {
-  const pseudonym = decodeURIComponent(params.pseudonym);
+  const { pseudonym: paramPseudonym } = await params;
+  const pseudonym = decodeURIComponent(paramPseudonym);
   return {
     title: `User ${pseudonym} - SMVITM Tech Forum`,
     description: `View ${pseudonym}'s profile, questions, and answers`,
   };
 }
 
+function calculateMemberDuration(createdAt: Date): number {
+  const now = new Date();
+  return Math.floor((now.getTime() - new Date(createdAt).getTime()) / (1000 * 60 * 60 * 24));
+}
+
 export default async function UserProfilePage({ params }: UserProfilePageProps) {
-  const pseudonym = decodeURIComponent(params.pseudonym);
+  const { pseudonym: paramPseudonym } = await params;
+  const pseudonym = decodeURIComponent(paramPseudonym);
   const user = await getUserByPseudonym(pseudonym);
 
   if (!user) {
@@ -26,7 +33,7 @@ export default async function UserProfilePage({ params }: UserProfilePageProps) 
   }
 
   const memberSince = new Date(user.createdAt);
-  const memberDuration = Math.floor((Date.now() - memberSince.getTime()) / (1000 * 60 * 60 * 24));
+  const memberDuration = calculateMemberDuration(user.createdAt);
 
   return (
     <div className="space-y-4">

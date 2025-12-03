@@ -1,7 +1,7 @@
 import { ModerationWidget } from '@/components/moderation/moderation-widget';
 import { HotQuestionsWidget } from '@/components/hot-questions/hot-questions-widget';
 import { AIFAQWidget } from '@/components/faq/ai-faq-widget';
-import { Lightbulb, TrendingUp, MessageSquare } from 'lucide-react';
+import { Lightbulb } from 'lucide-react';
 
 export async function RightSidebar() {
   return (

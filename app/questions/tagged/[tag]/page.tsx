@@ -6,13 +6,14 @@ import { Tag, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 
 interface TaggedQuestionsPageProps {
-  params: {
+  params: Promise<{
     tag: string;
-  };
+  }>;
 }
 
 export async function generateMetadata({ params }: TaggedQuestionsPageProps) {
-  const tagName = decodeURIComponent(params.tag);
+  const { tag } = await params;
+  const tagName = decodeURIComponent(tag);
   return {
     title: `Questions tagged [${tagName}] | SMVITM Tech Forum`,
     description: `Browse questions tagged with ${tagName}`,
@@ -22,12 +23,13 @@ export async function generateMetadata({ params }: TaggedQuestionsPageProps) {
 export default async function TaggedQuestionsPage({
   params,
 }: TaggedQuestionsPageProps) {
-  const tagName = decodeURIComponent(params.tag);
+  const { tag: tagParam } = await params;
+  const tagName = decodeURIComponent(tagParam);
 
   // Fetch tag info
-  const tag = await getTagByName(tagName);
+  const tagData = await getTagByName(tagName);
 
-  if (!tag) {
+  if (!tagData) {
     notFound();
   }
 
@@ -55,9 +57,9 @@ export default async function TaggedQuestionsPage({
         </div>
 
         <div className="flex items-center gap-4">
-          <TagBadge name={tag.name} size="lg" />
+          <TagBadge name={tagData.name} size="lg" />
           <span className="text-gray-600">
-            {tag.questionCount} question{tag.questionCount !== 1 ? 's' : ''}
+            {tagData.questionCount} question{tagData.questionCount !== 1 ? 's' : ''}
           </span>
         </div>
       </div>

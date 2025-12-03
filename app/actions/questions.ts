@@ -6,6 +6,8 @@ import { getAutoApproveStatus } from './settings';
 import { revalidatePath } from 'next/cache';
 import { PostStatus } from '@prisma/client';
 
+import { validateQuestionContent } from '@/lib/content-moderation';
+
 export async function createQuestion(
   title: string,
   content: string,
@@ -26,16 +28,17 @@ export async function createQuestion(
     return { error: 'Title is required' };
   }
 
-  if (title.length > 300) {
-    return { error: 'Title must be 300 characters or less' };
-  }
-
   if (!content || content.trim().length === 0) {
     return { error: 'Content is required' };
   }
 
-  if (content.length > 30000) {
-    return { error: 'Content must be 30,000 characters or less' };
+  // Content moderation check
+  const validation = validateQuestionContent(title, content);
+  if (!validation.isValid) {
+    return {
+      error: validation.reason || 'Content validation failed',
+      suggestions: validation.suggestions,
+    };
   }
 
   try {
@@ -85,7 +88,7 @@ export async function createQuestion(
     try {
       revalidatePath('/');
       revalidatePath('/questions');
-    } catch (e) {
+    } catch (_e) {
       // Ignore revalidation errors in test environment
     }
 
@@ -104,8 +107,8 @@ export async function getQuestions(
   const skip = (page - 1) * pageSize;
 
   try {
-    let whereClause: any = {
-      status: 'APPROVED',
+    const whereClause: { status: PostStatus; answers?: { none: Record<string, never> } } = {
+      status: PostStatus.APPROVED,
     };
 
     if (filter === 'unanswered') {
@@ -265,7 +268,7 @@ export async function incrementViewCount(questionId: string) {
 
     try {
       revalidatePath(`/questions/${questionId}`);
-    } catch (e) {
+    } catch (_e) {
       // Ignore revalidation errors in test environment
     }
   } catch (error) {

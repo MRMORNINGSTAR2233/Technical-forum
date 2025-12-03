@@ -28,11 +28,11 @@ export function AskQuestionForm() {
       const result = await createQuestion(title, content, tagArray);
 
       if ('error' in result) {
-        setError(result.error);
+        setError(result.error || 'An error occurred');
       } else {
         router.push(`/questions/${result.questionId}`);
       }
-    } catch (err) {
+    } catch (_err) {
       setError('Failed to create question');
     } finally {
       setIsSubmitting(false);
@@ -56,7 +56,7 @@ export function AskQuestionForm() {
           Title
         </label>
         <p className="text-xs text-[#6a737c] mb-2">
-          Be specific and imagine you're asking a question to another person.
+          Be specific and imagine you&apos;re asking a question to another person.
         </p>
         <input
           type="text"
@@ -84,7 +84,6 @@ export function AskQuestionForm() {
         <RichTextEditor
           content={content}
           onChange={setContent}
-          placeholder="Provide details about your question..."
         />
       </div>
 

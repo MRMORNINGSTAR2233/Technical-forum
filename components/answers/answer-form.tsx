@@ -24,12 +24,12 @@ export function AnswerForm({ questionId }: AnswerFormProps) {
       const result = await createAnswer(questionId, content);
 
       if ('error' in result) {
-        setError(result.error);
+        setError(result.error || 'An error occurred');
       } else {
         setContent('');
         router.refresh();
       }
-    } catch (err) {
+    } catch (_err) {
       setError('Failed to post answer');
     } finally {
       setIsSubmitting(false);
@@ -50,7 +50,6 @@ export function AnswerForm({ questionId }: AnswerFormProps) {
         <RichTextEditor
           content={content}
           onChange={setContent}
-          placeholder="Write your answer here..."
         />
       </div>
 

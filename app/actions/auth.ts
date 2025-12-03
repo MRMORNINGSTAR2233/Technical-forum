@@ -95,7 +95,7 @@ export async function createProfile(userId: string, pseudonym: string) {
     // Only revalidate in Next.js runtime context
     try {
       revalidatePath('/', 'layout');
-    } catch (e) {
+    } catch (_e) {
       // Ignore revalidation errors in test environment
     }
     
@@ -143,4 +143,41 @@ export async function getProfile(userId: string) {
   });
 
   return profile;
+}
+
+export async function updatePseudonym(userId: string, newPseudonym: string) {
+  // Check if pseudonym is available
+  const isAvailable = await checkPseudonymAvailability(newPseudonym);
+
+  if (!isAvailable) {
+    return { error: 'Pseudonym is already taken' };
+  }
+
+  // Validate pseudonym format (alphanumeric, 3-20 characters)
+  const pseudonymRegex = /^[a-zA-Z0-9_]{3,20}$/;
+  if (!pseudonymRegex.test(newPseudonym)) {
+    return {
+      error:
+        'Pseudonym must be 3-20 characters and contain only letters, numbers, and underscores',
+    };
+  }
+
+  try {
+    await prisma.profile.update({
+      where: { userId },
+      data: { pseudonym: newPseudonym },
+    });
+
+    // Only revalidate in Next.js runtime context
+    try {
+      revalidatePath('/', 'layout');
+    } catch (_e) {
+      // Ignore revalidation errors in test environment
+    }
+    
+    return { success: true };
+  } catch (error) {
+    console.error('Error updating pseudonym:', error);
+    return { error: 'Failed to update pseudonym' };
+  }
 }

@@ -36,7 +36,7 @@ export function AcceptAnswerButton({
       } else {
         router.refresh();
       }
-    } catch (err) {
+    } catch (_err) {
       alert('Failed to accept answer');
     } finally {
       setIsSubmitting(false);

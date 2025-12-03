@@ -1,50 +1,40 @@
-import 'dotenv/config';
-import { prisma } from '../lib/prisma';
+import { config } from 'dotenv';
+import { PrismaClient } from '@prisma/client';
+
+// Load environment variables
+config({ path: '.env.local' });
+config({ path: '.env' });
+
+const prisma = new PrismaClient();
 
 async function main() {
+  console.log('Connecting to database...');
+  console.log('DATABASE_URL:', process.env.DATABASE_URL ? 'Found' : 'Not found');
+  
   try {
-    // Get the most recent user
-    const latestProfile = await prisma.profile.findFirst({
-      orderBy: { createdAt: 'desc' },
-    });
-
-    if (latestProfile) {
-      // Update user to MODERATOR
-      await prisma.profile.update({
-        where: { id: latestProfile.id },
-        data: { role: 'MODERATOR' },
-      });
-      console.log(`✅ Updated user ${latestProfile.pseudonym} to MODERATOR`);
-    }
-
-    // Enable auto-approve
-    await prisma.globalSettings.upsert({
+    // Test connection
+    await prisma.$connect();
+    console.log('✓ Connected to database');
+    
+    const settings = await prisma.globalSettings.upsert({
       where: { id: 1 },
       update: { autoApproveEnabled: true },
       create: { id: 1, autoApproveEnabled: true },
     });
-    console.log('✅ Enabled auto-approve');
-
-    // Approve all pending questions
-    const result = await prisma.question.updateMany({
-      where: { status: 'PENDING' },
-      data: { status: 'APPROVED' },
-    });
-    console.log(`✅ Approved ${result.count} pending questions`);
-
-    // Approve all pending answers
-    const answerResult = await prisma.answer.updateMany({
-      where: { status: 'PENDING' },
-      data: { status: 'APPROVED' },
-    });
-    console.log(`✅ Approved ${answerResult.count} pending answers`);
-
+    
+    console.log('✓ Auto-approve enabled:', settings.autoApproveEnabled);
+    console.log('All new posts will be automatically approved without moderation.');
   } catch (error) {
-    console.error('Error:', error);
-    process.exit(1);
-  } finally {
-    await prisma.$disconnect();
+    console.error('Database error:', error);
+    throw error;
   }
 }
 
-main();
+main()
+  .catch((error) => {
+    console.error('Error:', error);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });

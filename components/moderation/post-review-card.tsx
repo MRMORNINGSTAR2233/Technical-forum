@@ -42,7 +42,7 @@ export function PostReviewCard({
       } else {
         router.refresh();
       }
-    } catch (err) {
+    } catch (_err) {
       setError('Failed to approve post');
     } finally {
       setIsProcessing(false);
@@ -61,7 +61,7 @@ export function PostReviewCard({
       } else {
         router.refresh();
       }
-    } catch (err) {
+    } catch (_err) {
       setError('Failed to reject post');
     } finally {
       setIsProcessing(false);
