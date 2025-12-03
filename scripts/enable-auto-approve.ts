@@ -1,21 +1,24 @@
 import { config } from 'dotenv';
 import { PrismaClient } from '@prisma/client';
+import { PrismaPg } from '@prisma/adapter-pg';
+import { Pool } from 'pg';
 
 // Load environment variables
 config({ path: '.env.local' });
 config({ path: '.env' });
 
-const prisma = new PrismaClient();
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+});
+const adapter = new PrismaPg(pool);
+const prisma = new PrismaClient({ adapter });
 
 async function main() {
   console.log('Connecting to database...');
   console.log('DATABASE_URL:', process.env.DATABASE_URL ? 'Found' : 'Not found');
   
   try {
-    // Test connection
-    await prisma.$connect();
-    console.log('✓ Connected to database');
-    
+    // Enable auto-approve
     const settings = await prisma.globalSettings.upsert({
       where: { id: 1 },
       update: { autoApproveEnabled: true },
@@ -23,7 +26,30 @@ async function main() {
     });
     
     console.log('✓ Auto-approve enabled:', settings.autoApproveEnabled);
-    console.log('All new posts will be automatically approved without moderation.');
+    
+    // Approve any pending questions
+    const updatedQuestions = await prisma.question.updateMany({
+      where: { status: 'PENDING' },
+      data: { status: 'APPROVED' }
+    });
+    console.log(`✓ Approved ${updatedQuestions.count} pending questions`);
+    
+    // Approve any pending answers  
+    const updatedAnswers = await prisma.answer.updateMany({
+      where: { status: 'PENDING' },
+      data: { status: 'APPROVED' }
+    });
+    console.log(`✓ Approved ${updatedAnswers.count} pending answers`);
+    
+    // List all questions
+    const questions = await prisma.question.findMany({
+      select: { id: true, title: true, status: true }
+    });
+    console.log('\nAll questions:');
+    questions.forEach(q => {
+      console.log(`  - [${q.status}] ${q.title}`);
+    });
+    
   } catch (error) {
     console.error('Database error:', error);
     throw error;

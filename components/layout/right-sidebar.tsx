@@ -2,8 +2,15 @@ import { ModerationWidget } from '@/components/moderation/moderation-widget';
 import { HotQuestionsWidget } from '@/components/hot-questions/hot-questions-widget';
 import { AIFAQWidget } from '@/components/faq/ai-faq-widget';
 import { Lightbulb } from 'lucide-react';
+import { getCommunityStats, getFeaturedTags } from '@/app/actions/stats';
+import Link from 'next/link';
 
 export async function RightSidebar() {
+  const [stats, featuredTags] = await Promise.all([
+    getCommunityStats(),
+    getFeaturedTags(),
+  ]);
+
   return (
     <aside className="hidden xl:block w-[300px] pt-6 sticky top-[50px] h-[calc(100vh-50px)] overflow-y-auto">
       <div className="px-4 space-y-4">
@@ -44,19 +51,19 @@ export async function RightSidebar() {
           <div className="p-4 space-y-3 text-sm">
             <div className="flex items-center justify-between">
               <span className="text-[#6a737c]">Questions</span>
-              <span className="font-semibold text-[#242729]">0</span>
+              <span className="font-semibold text-[#242729]">{stats.questionCount.toLocaleString()}</span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-[#6a737c]">Answers</span>
-              <span className="font-semibold text-[#242729]">0</span>
+              <span className="font-semibold text-[#242729]">{stats.answerCount.toLocaleString()}</span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-[#6a737c]">Users</span>
-              <span className="font-semibold text-[#242729]">0</span>
+              <span className="font-semibold text-[#242729]">{stats.userCount.toLocaleString()}</span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-[#6a737c]">Tags</span>
-              <span className="font-semibold text-[#242729]">0</span>
+              <span className="font-semibold text-[#242729]">{stats.tagCount.toLocaleString()}</span>
             </div>
           </div>
         </div>
@@ -70,18 +77,20 @@ export async function RightSidebar() {
           </div>
           <div className="p-4">
             <div className="flex flex-wrap gap-2">
-              <span className="inline-flex items-center px-2 py-1 bg-[#e1ecf4] text-[#39739d] text-xs rounded hover:bg-[#d0e3f1] transition-colors cursor-pointer">
-                javascript
-              </span>
-              <span className="inline-flex items-center px-2 py-1 bg-[#e1ecf4] text-[#39739d] text-xs rounded hover:bg-[#d0e3f1] transition-colors cursor-pointer">
-                python
-              </span>
-              <span className="inline-flex items-center px-2 py-1 bg-[#e1ecf4] text-[#39739d] text-xs rounded hover:bg-[#d0e3f1] transition-colors cursor-pointer">
-                react
-              </span>
-              <span className="inline-flex items-center px-2 py-1 bg-[#e1ecf4] text-[#39739d] text-xs rounded hover:bg-[#d0e3f1] transition-colors cursor-pointer">
-                java
-              </span>
+              {featuredTags.length > 0 ? (
+                featuredTags.map((tag) => (
+                  <Link
+                    key={tag.id}
+                    href={`/questions/tagged/${tag.name}`}
+                    className="inline-flex items-center gap-1 px-2 py-1 bg-[#e1ecf4] text-[#39739d] text-xs rounded hover:bg-[#d0e3f1] transition-colors"
+                  >
+                    {tag.name}
+                    <span className="text-[#6a737c]">×{tag.questionCount}</span>
+                  </Link>
+                ))
+              ) : (
+                <span className="text-sm text-[#6a737c]">No tags yet</span>
+              )}
             </div>
           </div>
         </div>
