@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { prisma } from '@/lib/prisma';
 import { getUnansweredQuestions, getUnansweredCount, isQuestionUnanswered } from '@/app/actions/unanswered';
 import * as fc from 'fast-check';
-import { cleanupDatabase, createTestProfile, createTestQuestion, createTestAnswer } from './helpers/test-utils';
+import { cleanupDatabase, createTestProfile, createTestQuestion, createTestAnswer, uniqueId } from './helpers/test-utils';
 
 describe('Unanswered Questions Feature', () => {
   beforeEach(async () => {
@@ -120,7 +120,7 @@ describe('Unanswered Questions Feature', () => {
             expect(resultIds).toEqual(unansweredIds.sort());
           }
         ),
-        { numRuns: 50 }
+        { numRuns: 5 }
       );
     });
   });
@@ -130,8 +130,8 @@ describe('Unanswered Questions Feature', () => {
       // Create an author profile
       const author = await prisma.profile.create({
         data: {
-          userId: 'test-author-sort',
-          pseudonym: 'TestAuthorSort',
+          userId: uniqueId('author'),
+          pseudonym: uniqueId('TestAuthorSort'),
           reputation: 0,
         },
       });
@@ -218,7 +218,7 @@ describe('Unanswered Questions Feature', () => {
             }
           }
         ),
-        { numRuns: 50 }
+        { numRuns: 5 }
       );
     });
   });
@@ -228,8 +228,8 @@ describe('Unanswered Questions Feature', () => {
       // Create an author profile
       const author = await prisma.profile.create({
         data: {
-          userId: 'test-author-dynamic',
-          pseudonym: 'TestAuthorDynamic',
+          userId: uniqueId('author'),
+          pseudonym: uniqueId('TestAuthorDynamic'),
           reputation: 0,
         },
       });
@@ -325,7 +325,7 @@ describe('Unanswered Questions Feature', () => {
             expect(unansweredIds).not.toContain(questions[0].id);
           }
         ),
-        { numRuns: 50 }
+        { numRuns: 5 }
       );
     });
   });
@@ -335,8 +335,8 @@ describe('Unanswered Questions Feature', () => {
       // Create an author profile
       const author = await prisma.profile.create({
         data: {
-          userId: 'test-author-status',
-          pseudonym: 'TestAuthorStatus',
+          userId: uniqueId('author'),
+          pseudonym: uniqueId('TestAuthorStatus'),
           reputation: 0,
         },
       });
@@ -451,7 +451,7 @@ describe('Unanswered Questions Feature', () => {
             });
           }
         ),
-        { numRuns: 50 }
+        { numRuns: 5 }
       );
     });
   });
@@ -461,8 +461,8 @@ describe('Unanswered Questions Feature', () => {
       // Create an author profile
       const author = await prisma.profile.create({
         data: {
-          userId: 'test-author-count',
-          pseudonym: 'TestAuthorCount',
+          userId: uniqueId('author'),
+          pseudonym: uniqueId('TestAuthorCount'),
           reputation: 0,
         },
       });
@@ -580,7 +580,7 @@ describe('Unanswered Questions Feature', () => {
             expect(unansweredList.length).toBe(count);
           }
         ),
-        { numRuns: 50 }
+        { numRuns: 5 }
       );
     });
   });

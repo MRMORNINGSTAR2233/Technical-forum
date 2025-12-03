@@ -1,7 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { prisma } from '@/lib/prisma';
-import { voteOnQuestion, voteOnAnswer } from '@/app/actions/votes';
-import { cleanupDatabase, createTestProfile, createTestQuestion, createTestAnswer } from './helpers/test-utils';
+import { cleanupDatabase, uniqueId } from './helpers/test-utils';
 
 describe('Voting System', () => {
   beforeEach(async () => {
@@ -14,19 +13,19 @@ describe('Voting System', () => {
      * Validates: Requirements 5.1
      */
     it('should create a vote with value +1 when upvoting', async () => {
-      // Create test profiles
+      // Create test profiles with unique IDs
       const author = await prisma.profile.create({
         data: {
-          userId: 'author-user',
-          pseudonym: 'Author',
+          userId: uniqueId('author'),
+          pseudonym: uniqueId('Author'),
           reputation: 0,
         },
       });
 
       const voter = await prisma.profile.create({
         data: {
-          userId: 'voter-user',
-          pseudonym: 'Voter',
+          userId: uniqueId('voter'),
+          pseudonym: uniqueId('Voter'),
           reputation: 0,
         },
       });
@@ -60,19 +59,19 @@ describe('Voting System', () => {
      * Validates: Requirements 5.2
      */
     it('should create a vote with value -1 when downvoting', async () => {
-      // Create test profiles
+      // Create test profiles with unique IDs
       const author = await prisma.profile.create({
         data: {
-          userId: 'author-user-2',
-          pseudonym: 'Author2',
+          userId: uniqueId('author'),
+          pseudonym: uniqueId('Author'),
           reputation: 0,
         },
       });
 
       const voter = await prisma.profile.create({
         data: {
-          userId: 'voter-user-2',
-          pseudonym: 'Voter2',
+          userId: uniqueId('voter'),
+          pseudonym: uniqueId('Voter'),
           reputation: 0,
         },
       });
@@ -106,19 +105,19 @@ describe('Voting System', () => {
      * Validates: Requirements 5.3
      */
     it('should prevent duplicate votes from the same user', async () => {
-      // Create test profiles
+      // Create test profiles with unique IDs
       const author = await prisma.profile.create({
         data: {
-          userId: 'author-user-3',
-          pseudonym: 'Author3',
+          userId: uniqueId('author'),
+          pseudonym: uniqueId('Author'),
           reputation: 0,
         },
       });
 
       const voter = await prisma.profile.create({
         data: {
-          userId: 'voter-user-3',
-          pseudonym: 'Voter3',
+          userId: uniqueId('voter'),
+          pseudonym: uniqueId('Voter'),
           reputation: 0,
         },
       });
@@ -171,35 +170,35 @@ describe('Voting System', () => {
      * Validates: Requirements 5.4
      */
     it('should calculate vote count as sum of all vote values', async () => {
-      // Create test profiles
+      // Create test profiles with unique IDs
       const author = await prisma.profile.create({
         data: {
-          userId: 'author-user-4',
-          pseudonym: 'Author4',
+          userId: uniqueId('author'),
+          pseudonym: uniqueId('Author'),
           reputation: 0,
         },
       });
 
       const voter1 = await prisma.profile.create({
         data: {
-          userId: 'voter-user-4a',
-          pseudonym: 'Voter4a',
+          userId: uniqueId('voter1'),
+          pseudonym: uniqueId('Voter1'),
           reputation: 0,
         },
       });
 
       const voter2 = await prisma.profile.create({
         data: {
-          userId: 'voter-user-4b',
-          pseudonym: 'Voter4b',
+          userId: uniqueId('voter2'),
+          pseudonym: uniqueId('Voter2'),
           reputation: 0,
         },
       });
 
       const voter3 = await prisma.profile.create({
         data: {
-          userId: 'voter-user-4c',
-          pseudonym: 'Voter4c',
+          userId: uniqueId('voter3'),
+          pseudonym: uniqueId('Voter3'),
           reputation: 0,
         },
       });

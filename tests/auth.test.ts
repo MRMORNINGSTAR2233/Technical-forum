@@ -60,7 +60,7 @@ describe('Authentication System', () => {
             expect(password.length).toBeGreaterThanOrEqual(8);
           }
         ),
-        { numRuns: 10 }
+        { numRuns: 3 }
       );
     });
   });

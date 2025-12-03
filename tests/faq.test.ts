@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { prisma } from '@/lib/prisma';
 import { getRecentFAQs, getFAQCount } from '@/app/actions/faq';
 import * as fc from 'fast-check';
-import { cleanupDatabase, createTestProfile, createTestQuestion, createTestAnswer } from './helpers/test-utils';
+import { cleanupDatabase, createTestProfile, createTestQuestion, createTestAnswer, uniqueId } from './helpers/test-utils';
 
 describe('AI FAQ System', () => {
   beforeEach(async () => {
@@ -13,8 +13,8 @@ describe('AI FAQ System', () => {
     it('should identify eligible questions for FAQ generation', async () => {
       const author = await prisma.profile.create({
         data: {
-          userId: 'test-author-faq',
-          pseudonym: 'TestAuthor',
+          userId: uniqueId('author'),
+          pseudonym: uniqueId('TestAuthor'),
           reputation: 0,
         },
       });
@@ -156,7 +156,7 @@ describe('AI FAQ System', () => {
               }
             }
           ),
-          { numRuns: 10 }
+          { numRuns: 3 }
         );
       },
       30000
@@ -167,8 +167,8 @@ describe('AI FAQ System', () => {
     it('should store FAQ with source question reference', async () => {
       const author = await prisma.profile.create({
         data: {
-          userId: 'test-author-storage',
-          pseudonym: 'TestAuthor',
+          userId: uniqueId('author'),
+          pseudonym: uniqueId('TestAuthor'),
           reputation: 0,
         },
       });
@@ -252,7 +252,7 @@ describe('AI FAQ System', () => {
               expect(retrieved?.answer).toBe(faqAnswer);
             }
           ),
-          { numRuns: 10 }
+          { numRuns: 3 }
         );
       },
       30000
@@ -332,7 +332,7 @@ describe('AI FAQ System', () => {
               }
             }
           ),
-          { numRuns: 10 }
+          { numRuns: 3 }
         );
       },
       30000

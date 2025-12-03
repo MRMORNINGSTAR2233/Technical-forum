@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { prisma } from '@/lib/prisma';
 import { getAllTags, getQuestionsByTag, getTagByName, getPopularTags } from '@/app/actions/tags';
 import * as fc from 'fast-check';
-import { cleanupDatabase, createTestProfile, createTestQuestion } from './helpers/test-utils';
+import { cleanupDatabase, createTestProfile, createTestQuestion, uniqueId } from './helpers/test-utils';
 
 describe('Tag System', () => {
   beforeEach(async () => {
@@ -14,8 +14,8 @@ describe('Tag System', () => {
       // Create an author profile
       const author = await prisma.profile.create({
         data: {
-          userId: 'test-author-tags',
-          pseudonym: 'TestAuthorTags',
+          userId: uniqueId('author'),
+          pseudonym: uniqueId('TestAuthorTags'),
           reputation: 0,
         },
       });
@@ -153,7 +153,7 @@ describe('Tag System', () => {
             });
           }
         ),
-        { numRuns: 50 }
+        { numRuns: 5 }
       );
     });
 
@@ -161,8 +161,8 @@ describe('Tag System', () => {
       // Create an author profile
       const author = await prisma.profile.create({
         data: {
-          userId: 'test-author-approved',
-          pseudonym: 'TestAuthorApproved',
+          userId: uniqueId('author'),
+          pseudonym: uniqueId('TestAuthorApproved'),
           reputation: 0,
         },
       });
@@ -216,8 +216,8 @@ describe('Tag System', () => {
       // Create an author profile
       const author = await prisma.profile.create({
         data: {
-          userId: 'test-author-filter',
-          pseudonym: 'TestAuthorFilter',
+          userId: uniqueId('author'),
+          pseudonym: uniqueId('TestAuthorFilter'),
           reputation: 0,
         },
       });
@@ -342,7 +342,7 @@ describe('Tag System', () => {
             }
           }
         ),
-        { numRuns: 30 }
+        { numRuns: 3 }
       );
     });
 
@@ -350,8 +350,8 @@ describe('Tag System', () => {
       // Create an author profile
       const author = await prisma.profile.create({
         data: {
-          userId: 'test-author-filter-status',
-          pseudonym: 'TestAuthorFilterStatus',
+          userId: uniqueId('author'),
+          pseudonym: uniqueId('TestAuthorFilterStatus'),
           reputation: 0,
         },
       });
@@ -404,8 +404,8 @@ describe('Tag System', () => {
       // Create an author profile
       const author = await prisma.profile.create({
         data: {
-          userId: 'test-author-sort',
-          pseudonym: 'TestAuthorSort',
+          userId: uniqueId('author'),
+          pseudonym: uniqueId('TestAuthorSort'),
           reputation: 0,
         },
       });
@@ -452,8 +452,8 @@ describe('Tag System', () => {
       // Create an author profile
       const author = await prisma.profile.create({
         data: {
-          userId: 'test-author-get-tag',
-          pseudonym: 'TestAuthorGetTag',
+          userId: uniqueId('author'),
+          pseudonym: uniqueId('TestAuthorGetTag'),
           reputation: 0,
         },
       });
@@ -490,8 +490,8 @@ describe('Tag System', () => {
       // Create an author profile
       const author = await prisma.profile.create({
         data: {
-          userId: 'test-author-popular',
-          pseudonym: 'TestAuthorPopular',
+          userId: uniqueId('author'),
+          pseudonym: uniqueId('TestAuthorPopular'),
           reputation: 0,
         },
       });

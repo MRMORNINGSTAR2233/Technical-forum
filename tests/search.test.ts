@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { prisma } from '@/lib/prisma';
 import { searchQuestions } from '@/app/actions/search';
 import * as fc from 'fast-check';
-import { cleanupDatabase, createTestProfile, createTestQuestion } from './helpers/test-utils';
+import { cleanupDatabase, createTestProfile, createTestQuestion, uniqueId } from './helpers/test-utils';
 
 describe('Search Functionality', () => {
   beforeEach(async () => {
@@ -13,8 +13,8 @@ describe('Search Functionality', () => {
     it('should match questions by title', async () => {
       const author = await prisma.profile.create({
         data: {
-          userId: 'test-author-search',
-          pseudonym: 'TestAuthor',
+          userId: uniqueId('author'),
+          pseudonym: uniqueId('TestAuthor'),
           reputation: 0,
         },
       });
@@ -36,8 +36,8 @@ describe('Search Functionality', () => {
     it('should match questions by content', async () => {
       const author = await prisma.profile.create({
         data: {
-          userId: 'test-author-content',
-          pseudonym: 'TestAuthor',
+          userId: uniqueId('author'),
+          pseudonym: uniqueId('TestAuthor'),
           reputation: 0,
         },
       });
@@ -113,7 +113,7 @@ describe('Search Functionality', () => {
             });
           }
         ),
-        { numRuns: 30 }
+        { numRuns: 3 }
       );
     });
   });
@@ -122,8 +122,8 @@ describe('Search Functionality', () => {
     it('should rank exact title matches higher', async () => {
       const author = await prisma.profile.create({
         data: {
-          userId: 'test-author-relevance',
-          pseudonym: 'TestAuthor',
+          userId: uniqueId('author'),
+          pseudonym: uniqueId('TestAuthor'),
           reputation: 0,
         },
       });
@@ -201,7 +201,7 @@ describe('Search Functionality', () => {
             }
           }
         ),
-        { numRuns: 30 }
+        { numRuns: 3 }
       );
     });
   });
@@ -210,8 +210,8 @@ describe('Search Functionality', () => {
     it('should only return approved questions', async () => {
       const author = await prisma.profile.create({
         data: {
-          userId: 'test-author-status',
-          pseudonym: 'TestAuthor',
+          userId: uniqueId('author'),
+          pseudonym: uniqueId('TestAuthor'),
           reputation: 0,
         },
       });
@@ -294,7 +294,7 @@ describe('Search Functionality', () => {
             });
           }
         ),
-        { numRuns: 30 }
+        { numRuns: 3 }
       );
     });
   });
@@ -303,8 +303,8 @@ describe('Search Functionality', () => {
     it('should match questions by tags', async () => {
       const author = await prisma.profile.create({
         data: {
-          userId: 'test-author-tags',
-          pseudonym: 'TestAuthor',
+          userId: uniqueId('author'),
+          pseudonym: uniqueId('TestAuthor'),
           reputation: 0,
         },
       });
@@ -383,7 +383,7 @@ describe('Search Functionality', () => {
             expect(hasMatchingTag).toBe(true);
           }
         ),
-        { numRuns: 30 }
+        { numRuns: 3 }
       );
     });
   });

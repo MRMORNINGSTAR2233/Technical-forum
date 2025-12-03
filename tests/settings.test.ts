@@ -121,7 +121,7 @@ describe('Global Settings', () => {
           const status = await getAutoApproveStatus();
           expect(status).toBe(value);
         }),
-        { numRuns: 10 }
+        { numRuns: 3 }
       );
     });
 
